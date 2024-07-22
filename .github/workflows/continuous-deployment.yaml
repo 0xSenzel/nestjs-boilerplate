@@ -1,0 +1,64 @@
+name: Continuous Deployment
+
+on:
+  workflow_run:
+    workflows: [Continuous Integration]
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  release-to-ec2:
+    name: Release to EC2 Instance
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up SSH Key
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > agro-chem-be.pem
+          chmod 600 agro-chem-be.pem
+
+      - name: SSH and Release to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          SHA: ${{ github.sha }}
+        with:
+          envs: SHA
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            echo "SSH connection established successfully."
+
+            echo "Logging into Docker Hub..."
+            echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
+            echo "Logged in to Docker Hub."
+
+            echo "Stopping all running containers..."
+            docker stop $(docker ps -q) || true
+
+            echo "Performing Docker system prune..."
+            docker system prune -a --force
+
+            echo "Pulling latest Docker image..."
+            docker pull ${{ secrets.DOCKER_USERNAME}}/${{ secrets.DOCKER_REPO_NAME }}:${SHA}
+
+            echo "Running new Docker image..."
+            docker run -d -p 3333:3333 \
+            -e SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            -e SUPABASE_SERVICE_KEY=${{ secrets.SUPABASE_SERVICE_KEY }} \
+            -e SUPABASE_JWT_SECRET=${{ secrets.SUPABASE_JWT_SECRET }} \
+            -e JWT_EXPIRATION_TIME=${{ secrets.JWT_EXPIRATION_TIME }} \
+            -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+            -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+            -e AWS_REGION=${{ secrets.AWS_REGION }} \
+            -e AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }} \
+            -e BASE64_SECRET_KEY=${{ secrets.BASE64_SECRET_KEY }} \
+            ${{ secrets.DOCKER_USERNAME}}/${{ secrets.DOCKER_REPO_NAME }}:${{ github.sha }}
+
+            echo "Deployment completed successfully."
