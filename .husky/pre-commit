@@ -1,4 +1,5 @@
 #!/bin/sh
+chmod +x .husky/_/pre-commit
 . "$(dirname "$0")/_/husky.sh"
 
 HUSKY_SKIP_HOOK="false"
