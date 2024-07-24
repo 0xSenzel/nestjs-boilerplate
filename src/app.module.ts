@@ -3,6 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { PrismaModule } from './prisma/prisma.module';
+import { PrismaService } from './prisma/prisma.service';
+import { PrismaController } from './prisma/prisma.controller';
 
 @Module({
   imports: [
@@ -27,8 +30,9 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
+    PrismaModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: [PrismaController],
+  providers: [PrismaService],
 })
 export class AppModule {}

@@ -20,8 +20,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "generate-supabase-types": "npx supabase gen types typescript --project-id \"anlydzdgwgsinpaepqzx\" --schema public > src/database.supabase.ts",
-    "generate:module": "set /p NAME=Enter module name: && nest generate controller \"%NAME%\" && nest generate service \"%NAME%\" && nest generate module \"%NAME%\"",
-    "prepare": "husky"
+    "generate:module": "bash -c 'read -p \"Enter module name: \" NAME && nest generate controller \"$NAME\" && nest generate service \"$NAME\" && nest generate module \"$NAME\"'",
+    "prepare": "husky",
+    "prisma": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@automapper/classes": "^8.8.1",
@@ -35,6 +36,7 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.3.9",
     "@nestjs/swagger": "^7.4.0",
+    "@prisma/client": "^5.17.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "passport": "^0.7.0",

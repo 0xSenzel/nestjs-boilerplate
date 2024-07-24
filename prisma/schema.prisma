@@ -10,5 +10,13 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://user:12345@localhost:5432" //env("DATABASE_URL")
+}
+
+model User {
+  id    String     @default(uuid()) @id
+  email String  @unique
+  name  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
