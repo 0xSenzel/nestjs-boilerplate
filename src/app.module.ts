@@ -6,6 +6,9 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaController } from './prisma/prisma.controller';
+import { UserController } from './user/user.controller';
+import { UserService } from './user/user.service';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -31,8 +34,9 @@ import { PrismaController } from './prisma/prisma.controller';
       strategyInitializer: classes(),
     }),
     PrismaModule,
+    UserModule,
   ],
-  controllers: [PrismaController],
-  providers: [PrismaService],
+  controllers: [PrismaController, UserController],
+  providers: [PrismaService, UserService],
 })
 export class AppModule {}
