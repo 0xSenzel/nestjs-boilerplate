@@ -1,5 +1,5 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+. "$(dirname "$0")/husky.sh"
 
 HUSKY_SKIP_HOOK="false"
 echo "Initial HUSKY_SKIP_HOOK value: $HUSKY_SKIP_HOOK"
