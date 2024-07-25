@@ -6,9 +6,13 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaController } from './prisma/prisma.controller';
+import { AuthController } from './auth/auth.controller';
+import { AuthService } from './auth/auth.service';
+import { AuthModule } from './auth/auth.module';
 import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -33,10 +37,14 @@ import { UserModule } from './user/user.module';
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
+    PassportModule.register({
+      defaultStrategy: 'jwt',
+    }),
     PrismaModule,
+    AuthModule,
     UserModule,
   ],
-  controllers: [PrismaController, UserController],
-  providers: [PrismaService, UserService],
+  controllers: [PrismaController, AuthController, UserController],
+  providers: [PrismaService, AuthService, UserService],
 })
 export class AppModule {}

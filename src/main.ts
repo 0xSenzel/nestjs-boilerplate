@@ -10,6 +10,6 @@ async function bootstrap() {
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerOptions);
   SwaggerModule.setup('docs', app, swaggerDocument);
 
-  await app.listen(3333);
+  await app.listen(3111);
 }
 bootstrap();
