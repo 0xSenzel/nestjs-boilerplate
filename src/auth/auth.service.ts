@@ -103,6 +103,10 @@ export class AuthService {
     return user;
   }
 
+  public fibonacci(n: number) {
+    return n < 1 ? 0 : n <= 2 ? 1: this.fibonacci(n-1) + this.fibonacci(n-2);
+  }
+
   private async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt(this.saltRounds);
     return await bcrypt.hash(password, salt);
