@@ -21,6 +21,7 @@ import { PassportModule } from '@nestjs/passport';
         name: 'AUTH_MICROSERVICE',
         transport: Transport.KAFKA,
         options: {
+          producerOnlyMode: true,
           client: {
             brokers: ['localhost:9092'],
           },
