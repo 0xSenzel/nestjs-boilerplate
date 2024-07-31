@@ -104,7 +104,11 @@ export class AuthService {
   }
 
   public fibonacci(n: number) {
-    return n < 1 ? 0 : n <= 2 ? 1: this.fibonacci(n-1) + this.fibonacci(n-2);
+    return n < 1
+      ? 0
+      : n <= 2
+        ? 1
+        : this.fibonacci(n - 1) + this.fibonacci(n - 2);
   }
 
   private async hashPassword(password: string): Promise<string> {
